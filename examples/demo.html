@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RustyUI - Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      color: white;
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 48px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    
+    .demo-section {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 24px;
+      border-radius: 12px;
+    }
+    
+    .demo-section h2 {
+      color: #1a1a1a;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    
+    #alert-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 2000;
+      width: 350px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🦀 RustyUI Framework</h1>
+    
+    <div class="demo-grid">
+      <!-- Buttons Demo -->
+      <div class="demo-section">
+        <h2>Buttons</h2>
+        <div id="buttons-demo" class="button-group"></div>
+      </div>
+      
+      <!-- Input Demo -->
+      <div class="demo-section">
+        <h2>Input Fields</h2>
+        <div id="input-demo"></div>
+      </div>
+      
+      <!-- Alerts Demo -->
+      <div class="demo-section">
+        <h2>Alerts</h2>
+        <div id="alerts-demo"></div>
+      </div>
+      
+      <!-- Cards Demo -->
+      <div class="demo-section">
+        <h2>Cards</h2>
+        <div id="cards-demo"></div>
+      </div>
+    </div>
+    
+    <div class="demo-section" style="text-align: center;">
+      <h2>Modal Demo</h2>
+      <p style="margin-bottom: 20px; color: #666;">Click the button below to open a modal</p>
+      <div id="modal-trigger"></div>
+    </div>
+  </div>
+  
+  <div id="alert-container"></div>
+  
+  <script type="module">
+    import { Button, Card, Input, Modal, Alert } from './src/index.js';
+    
+    // Button Variants
+    const btnPrimary = new Button({ 
+      children: 'Primary',
+      onClick: () => showAlert('info', 'Primary button clicked!')
+    });
+    
+    const btnSuccess = Button.success({ 
+      children: 'Success',
+      onClick: () => showAlert('success', 'Success button clicked!')
+    });
+    
+    const btnDanger = Button.danger({ 
+      children: 'Danger',
+      onClick: () => showAlert('error', 'Danger button clicked!')
+    });
+    
+    const btnSecondary = Button.secondary({ 
+      children: 'Secondary',
+      onClick: () => showAlert('warning', 'Secondary button clicked!')
+    });
+    
+    btnPrimary.mount(document.getElementById('buttons-demo'));
+    btnSuccess.mount(document.getElementById('buttons-demo'));
+    btnDanger.mount(document.getElementById('buttons-demo'));
+    btnSecondary.mount(document.getElementById('buttons-demo'));
+    
+    // Input Fields
+    const inputEmail = new Input({
+      label: 'Email Address',
+      type: 'email',
+      placeholder: 'you@example.com'
+    });
+    
+    const inputPassword = new Input({
+      label: 'Password',
+      type: 'password',
+      placeholder: 'Enter your password'
+    });
+    
+    inputEmail.mount(document.getElementById('input-demo'));
+    inputPassword.mount(document.getElementById('input-demo'));
+    
+    // Alerts
+    const alertInfo = Alert.info({ 
+      message: 'This is an informational message',
+      dismissible: true 
+    });
+    
+    const alertSuccess = Alert.success({ 
+      message: 'Operation completed successfully!',
+      dismissible: true 
+    });
+    
+    const alertWarning = Alert.warning({ 
+      message: 'Warning: Please review before continuing',
+      dismissible: true 
+    });
+    
+    const alertError = Alert.error({ 
+      message: 'An error occurred. Please try again.',
+      dismissible: true 
+    });
+    
+    alertInfo.mount(document.getElementById('alerts-demo'));
+    alertSuccess.mount(document.getElementById('alerts-demo'));
+    alertWarning.mount(document.getElementById('alerts-demo'));
+    alertError.mount(document.getElementById('alerts-demo'));
+    
+    // Card Component
+    const card = new Card({ maxWidth: '100%' });
+    card.addHeader('Feature Card');
+    card.element.innerHTML += `
+      <p style="color: #666; line-height: 1.6; margin-bottom: 16px;">
+        This is a card component with header and footer. Cards are great for displaying 
+        related content in a visually appealing way.
+      </p>
+      <div style="display: flex; gap: 8px;" id="card-actions"></div>
+    `;
+    card.addFooter('Last updated: Today');
+    card.mount(document.getElementById('cards-demo'));
+    
+    // Card actions
+    const cardBtn1 = new Button({ 
+      children: 'Learn More',
+      style: { fontSize: '12px', padding: '8px 16px' }
+    });
+    
+    const cardBtn2 = Button.secondary({ 
+      children: 'Dismiss',
+      style: { fontSize: '12px', padding: '8px 16px' }
+    });
+    
+    cardBtn1.mount(document.getElementById('card-actions'));
+    cardBtn2.mount(document.getElementById('card-actions'));
+    
+    // Modal
+    const modalTrigger = new Button({
+      children: 'Open Modal',
+      onClick: () => modal.show()
+    });
+    modalTrigger.mount(document.getElementById('modal-trigger'));
+    
+    const modal = new Modal({
+      title: 'Welcome to RustyUI',
+      maxWidth: '500px'
+    });
+    modal.setContent(`
+      <p style="margin-bottom: 16px;">
+        RustyUI is a lightweight UI framework built from scratch using vanilla JavaScript.
+        It provides a simple and intuitive API for creating beautiful UI components.
+      </p>
+      <h3 style="margin-bottom: 12px; color: #1a1a1a;">Features:</h3>
+      <ul style="line-height: 1.8; color: #555;">
+        <li>✅ Lightweight and fast</li>
+        <li>✅ No dependencies</li>
+        <li>✅ Easy to use API</li>
+        <li>✅ Beautiful animations</li>
+        <li>✅ Fully customizable</li>
+      </ul>
+    `);
+    
+    // Add modal footer buttons
+    setTimeout(() => {
+      const modalContent = modal.element.querySelector('.modal-content');
+      if (modalContent) {
+        const footer = document.createElement('div');
+        footer.style.cssText = 'margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;';
+        
+        const cancelBtn = Button.secondary({
+          children: 'Cancel',
+          onClick: () => modal.hide()
+        });
+        
+        const confirmBtn = Button.success({
+          children: 'Got it!',
+          onClick: () => {
+            showAlert('success', 'Modal confirmed!');
+            modal.hide();
+          }
+        });
+        
+        cancelBtn.mount(footer);
+        confirmBtn.mount(footer);
+        modalContent.appendChild(footer);
+      }
+    }, 0);
+    
+    // Helper function to show alerts
+    function showAlert(type, message) {
+      const container = document.getElementById('alert-container');
+      const alert = new Alert({
+        type: type,
+        message: message,
+        dismissible: true,
+        onClose: () => alert.unmount()
+      });
+      alert.mount(container);
+      
+      // Auto-dismiss after 5 seconds
+      setTimeout(() => {
+        if (alert.element && alert.element.parentNode) {
+          alert.unmount();
+        }
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
